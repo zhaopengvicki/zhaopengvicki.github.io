@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Docker,系统架构,项目部署,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="CentOS7防火墙 阿里云ECS-CentOS7的防火墙默认为关闭状态，需要从阿里云管理控制台管理端口 CentOS7默认安装了firewalld防火墙 利用防火墙，我们可以允许或是限制传输的数据通过 查看、启动、关闭、重启防火墙管理命令：">
+<meta name="keywords" content="Docker,系统架构,项目部署">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker环境前后端分离项目部署方案">
+<meta property="og:url" content="http://yoursite.com/2019/03/31/Docker环境前后端分离项目部署方案/index.html">
+<meta property="og:site_name" content="禅悟">
+<meta property="og:description" content="CentOS7防火墙 阿里云ECS-CentOS7的防火墙默认为关闭状态，需要从阿里云管理控制台管理端口 CentOS7默认安装了firewalld防火墙 利用防火墙，我们可以允许或是限制传输的数据通过 查看、启动、关闭、重启防火墙管理命令：">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-03-31T15:07:39.248Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Docker环境前后端分离项目部署方案">
+<meta name="twitter:description" content="CentOS7防火墙 阿里云ECS-CentOS7的防火墙默认为关闭状态，需要从阿里云管理控制台管理端口 CentOS7默认安装了firewalld防火墙 利用防火墙，我们可以允许或是限制传输的数据通过 查看、启动、关闭、重启防火墙管理命令：">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/03/31/Docker环境前后端分离项目部署方案/">
+
+
+
+
+
+  <title>Docker环境前后端分离项目部署方案 | 禅悟</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">禅悟</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">It's my life.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/31/Docker环境前后端分离项目部署方案/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zhao Peng">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="禅悟">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Docker环境前后端分离项目部署方案</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-31T22:58:30+08:00">
+                2019-03-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="CentOS7防火墙"><a href="#CentOS7防火墙" class="headerlink" title="CentOS7防火墙"></a>CentOS7防火墙</h2><ol start="0">
+<li>阿里云ECS-CentOS7的防火墙默认为关闭状态，需要从阿里云管理控制台管理端口</li>
+<li>CentOS7默认安装了firewalld防火墙</li>
+<li>利用防火墙，我们可以允许或是限制传输的数据通过</li>
+<li><p>查看、启动、关闭、重启防火墙管理命令：</p>
+<a id="more"></a>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --state <span class="comment"># 查看启动状态</span></span><br><span class="line">service firewall start <span class="comment"># 启动</span></span><br><span class="line">service firewall stop <span class="comment"># 停止</span></span><br><span class="line">service firewall restart <span class="comment"># 重启</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>端口管理</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --permanent --list-ports <span class="comment"># 查看开放的端口</span></span><br><span class="line">firewall-cmd --permanent --add-port=<span class="number">8080</span><span class="number">-8085</span>/tcp <span class="comment"># 开启端口</span></span><br><span class="line">firewall-cmd --reload <span class="comment"># 重新加载</span></span><br><span class="line">firewall-cmd --permanent --remove-port=<span class="number">8080</span><span class="number">-8085</span>/tcp <span class="comment"># 关闭端口</span></span><br><span class="line">firewall-cmd --permanent --list-services <span class="comment"># 查看使用互联网的程序</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="Docker虚拟机"><a href="#Docker虚拟机" class="headerlink" title="Docker虚拟机"></a>Docker虚拟机</h2><ol>
+<li><p>安装Docker虚拟机</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum -y update <span class="comment"># 更新yum软件管理器</span></span><br><span class="line">yum install -y docker <span class="comment"># 安装Docker</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>管理Docker虚拟机</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">service docker start <span class="comment"># 启动</span></span><br><span class="line">service docker stop <span class="comment"># 关闭</span></span><br><span class="line">service docker restart <span class="comment"># 重启</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Docker常用镜像命令</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker search java <span class="comment"># 查找跟java有关的镜像</span></span><br><span class="line">docker pull java <span class="comment"># 下载java镜像</span></span><br><span class="line">docker tag java myjava <span class="comment"># 复制java镜像，并重命名为myjava（适用于镜像名字比较长时候的重命名）</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>Docker加速器<br>地址：<a href="http://www.daocloud.io" target="_blank" rel="noopener">www.daocloud.io</a> -&gt; 注册 -&gt; 加速器<br>在linux命令行中执行加速器语句，同时需要去修改docker的配置文件<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/docker/daemon.json <span class="comment"># 删除"registry-mirrors"节点最后的","</span></span><br><span class="line">:wq <span class="comment"># 记得保存</span></span><br></pre></td></tr></table></figure></p>
+<p>搜索java并安装java镜像<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker search java</span><br><span class="line">docker pull docker.io/java</span><br></pre></td></tr></table></figure></p>
+<p>显示docker中安装的镜像<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure></p>
+<p>导入导出镜像<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker save java &gt; /home/java.tar.gz <span class="comment"># 导出镜像</span></span><br><span class="line">docker load &lt; /home/java.tar.gz <span class="comment"># 导入镜像</span></span><br><span class="line">docker images <span class="comment"># 查看镜像</span></span><br><span class="line">docker rmi java <span class="comment"># 删除镜像</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="Docker容器"><a href="#Docker容器" class="headerlink" title="Docker容器"></a>Docker容器</h3><ol>
+<li><p>启动容器</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --name myjava java bash <span class="comment"># -it 启动容器后开启一个交互界面 --name 容器的名字 java 镜像的名字 bash 启动容器后执行bash</span></span><br><span class="line">docker run -it --name myjava -p <span class="number">9000</span>:<span class="number">8080</span> -p <span class="number">9001</span>:<span class="number">8085</span> java bash <span class="comment"># -p 映射端口 [宿主机端口:容器端口]</span></span><br><span class="line">docker run -it --name myjava -v /home/project:/soft --privileged java bash <span class="comment"># -v 映射文件（目录） [宿主机目录:容器目录] --privileged 权限（最高权限）</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>暂停和停止容器</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker pause myjava <span class="comment"># 暂停容器 myjava 为容器名字，也可以为容器编号</span></span><br><span class="line">docker unpause myjava <span class="comment"># 恢复运行</span></span><br><span class="line">docker stop myjava <span class="comment"># 停止运行</span></span><br><span class="line">docker start -i myjava <span class="comment"># 启动容器 -i 进入交互界面</span></span><br><span class="line">docker rm myjava <span class="comment"># 删除容器，使用前需要将该容器停止（stop）</span></span><br><span class="line">docker ps -a <span class="comment"># 查看容器列表</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="常见MySQL集群方案"><a href="#常见MySQL集群方案" class="headerlink" title="常见MySQL集群方案"></a>常见MySQL集群方案</h3><ol>
+<li>Replication</li>
+</ol>
+<ul>
+<li>速度快</li>
+<li>弱一致性</li>
+<li>低价值</li>
+<li>适用于（日志、新闻、帖子等）</li>
+</ul>
+<ol start="2">
+<li>PXC（Percona XtraDB Cluster）</li>
+</ol>
+<ul>
+<li>速度慢</li>
+<li>强一致性</li>
+<li>高价值</li>
+<li>适用于（订单、账户、财务等）</li>
+</ul>
+<ol start="3">
+<li>建议PXC使用PerconaServer<br>MySQL改进版，性能提升很大</li>
+<li>PXC方案与Replication方案对比</li>
+</ol>
+<ul>
+<li>PXC数据同步双向，在任意一个节点中写入数据，会同步到其他节点</li>
+<li>Replication数据同步单向，Master能将数据同步到Slave，Slave无法将数据同步到Master</li>
+<li>PXC，同步复制，事务在所有集群节点要么同时提交，要么不提交</li>
+<li>Replication，异步复制，无法保证数据的一致性</li>
+</ul>
+<h3 id="利用PXC技术创建MySQL集群"><a href="#利用PXC技术创建MySQL集群" class="headerlink" title="利用PXC技术创建MySQL集群"></a>利用PXC技术创建MySQL集群</h3><ol>
+<li><p>下载或者导入本地镜像</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker pull percona/percona-xtradb-cluster <span class="comment"># 在PXC官方下载镜像</span></span><br><span class="line">docker load &lt; /home/soft/pxc.tar.gz <span class="comment"># 导入本地PXC镜像</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建内部网络</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker network create net1 <span class="comment"># 创建网段net1</span></span><br><span class="line">docker network inspect net1 <span class="comment"># 查看net1网段信息</span></span><br><span class="line">docker network rm net1 <span class="comment"># 删除net1网段</span></span><br><span class="line">docker network create --subnet=<span class="number">172.18</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">24</span> net1 <span class="comment">#/ 指定具体网段，24位子网掩码</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Docker卷（容器中的PXC节点映射数据目录的解决办法）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker volume create --name v1 <span class="comment"># 创建数据卷</span></span><br><span class="line">docker inspect v1 <span class="comment"># 查看数据卷信息</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建PXC容器</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p <span class="number">3306</span>:<span class="number">3306</span> </span><br><span class="line">-v v1:/var/lib/mysql <span class="comment"># 映射宿主目录</span></span><br><span class="line">-e MYSQL_ROOT_PASSWORD=abc123456 <span class="comment"># 指定ROOT用户的密码</span></span><br><span class="line">-e CLUSTER_NAME=PXC <span class="comment"># PXC集群名字</span></span><br><span class="line">-e XTRABACKUP_PASSWORD=abc123456 <span class="comment"># 数据库节点间同步用的密码</span></span><br><span class="line">--privileged --name=node1 --net=net1 --ip <span class="number">172.18</span><span class="number">.0</span><span class="number">.2</span></span><br><span class="line">pxc <span class="comment"># 镜像名称</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>创建5节点MySQL集群时需要注意：</p>
+<ul>
+<li>需指定不同的docker数据卷（v1，v2，v3，v4，v5）</li>
+<li>需将宿主机不同的端口映射到容器3306端口（3306，3307，3308，…）</li>
+<li>需指定不同的ip地址（172，18.0.2，172.18.0.3，172.18.0.4，…）</li>
+<li>同时需增加额外参数来表明加入到的集群，参数如下<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-e CLUSTER_JOIN=node1 <span class="comment"># node1 为创建第一个PXC容器时的名称</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>具体创建命令示例如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">docker volume create --name v1</span><br><span class="line">docker volume create --name v2</span><br><span class="line">docker volume create --name v3</span><br><span class="line">docker volume create --name v4</span><br><span class="line">docker volume create --name v5</span><br><span class="line"></span><br><span class="line">docker run -d -p <span class="number">3306</span>:<span class="number">3306</span> -e MYSQL_ROOT_PASSWORD=abc123456 -e CLUSTER_NAME=PXC -e XTRABACKUP_PASSWORD=abc123456 -v v1:/var/lib/mysql --privileged --name=node1 --net=net1 --ip <span class="number">172.18</span><span class="number">.0</span><span class="number">.2</span> pxc</span><br><span class="line">docker run -d -p <span class="number">3307</span>:<span class="number">3306</span> -e MYSQL_ROOT_PASSWORD=abc123456 -e CLUSTER_NAME=PXC -e XTRABACKUP_PASSWORD=abc123456 -e CLUSTER_JOIN=node1 -v v2:/var/lib/mysql --privileged --name=node2 --net=net1 --ip <span class="number">172.18</span><span class="number">.0</span><span class="number">.3</span> pxc</span><br><span class="line">docker run -d -p <span class="number">3308</span>:<span class="number">3306</span> -e MYSQL_ROOT_PASSWORD=abc123456 -e CLUSTER_NAME=PXC -e XTRABACKUP_PASSWORD=abc123456 -e CLUSTER_JOIN=node1 -v v3:/var/lib/mysql --privileged --name=node3 --net=net1 --ip <span class="number">172.18</span><span class="number">.0</span><span class="number">.4</span> pxc</span><br><span class="line">docker run -d -p <span class="number">3309</span>:<span class="number">3306</span> -e MYSQL_ROOT_PASSWORD=abc123456 -e CLUSTER_NAME=PXC -e XTRABACKUP_PASSWORD=abc123456 -e CLUSTER_JOIN=node1 -v v4:/var/lib/mysql --privileged --name=node4 --net=net1 --ip <span class="number">172.18</span><span class="number">.0</span><span class="number">.5</span> pxc</span><br><span class="line">docker run -d -p <span class="number">3310</span>:<span class="number">3306</span> -e MYSQL_ROOT_PASSWORD=abc123456 -e CLUSTER_NAME=PXC -e XTRABACKUP_PASSWORD=abc123456 -e CLUSTER_JOIN=node1 -v v5:/var/lib/mysql --privileged --name=node5 --net=net1 --ip <span class="number">172.18</span><span class="number">.0</span><span class="number">.6</span> pxc</span><br></pre></td></tr></table></figure></p>
+<h3 id="安装Haproxy镜像"><a href="#安装Haproxy镜像" class="headerlink" title="安装Haproxy镜像"></a>安装Haproxy镜像</h3><ol>
+<li><p>下载Haproxy镜像</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker pull haproxy <span class="comment"># 下载haproxy镜像</span></span><br><span class="line">docker images <span class="comment"># 查看</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建Haproxy配置文件</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch /home/soft/haproxy.cfg</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>配置文件编写参考：<a href="https://zhangge.net/5125.html" target="_blank" rel="noopener">https://zhangge.net/5125.html</a><br>文件主要内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">global</span><br><span class="line">	# 工作目录</span><br><span class="line">	chroot /usr/local/etc/haproxy</span><br><span class="line">	# 日志文件，使用rsyslog服务中local5日志设备（/var/log/local5）,等级info</span><br><span class="line">	log 127.0.0.1 local5 info</span><br><span class="line">	# 守护进程运行</span><br><span class="line">	daemon</span><br><span class="line">	</span><br><span class="line">defaults</span><br><span class="line">	log global</span><br><span class="line">	mode http</span><br><span class="line">	# 日志格式</span><br><span class="line">	option httplog</span><br><span class="line">	# 日志中不记录负载均衡的心跳检测记录</span><br><span class="line">	option dontlognull</span><br><span class="line">	# 连接超时（毫秒）</span><br><span class="line">	timeout connect 5000</span><br><span class="line">	# 客户端超时（毫秒）</span><br><span class="line">	timeout client 50000</span><br><span class="line">	# 服务器超时（毫秒）</span><br><span class="line">	timeout server 50000</span><br><span class="line">	</span><br><span class="line"># 监控界面</span><br><span class="line">listen admin_stats</span><br><span class="line">	# 监控界面的访问的IP和端口</span><br><span class="line">	bind 0.0.0.0:8888</span><br><span class="line">	# 访问协议</span><br><span class="line">	mode http</span><br><span class="line">	# URI相对地址</span><br><span class="line">	stats uri /dbs</span><br><span class="line">	# 统计报告格式</span><br><span class="line">	stats realm Global\ statistics</span><br><span class="line">	# 登录账户信息</span><br><span class="line">	stats auth admin:abc123456</span><br><span class="line">	</span><br><span class="line"># 数据库负载均衡</span><br><span class="line">listen proxy-mysql</span><br><span class="line">	# 访问的IP和端口</span><br><span class="line">	bind 0.0.0.0:3306</span><br><span class="line">	# 网络协议</span><br><span class="line">	mode tcp</span><br><span class="line">	# 负载均衡算法（轮询算法）</span><br><span class="line">	# 轮询算法：roundrobin</span><br><span class="line">	# 权重算法：static-rr</span><br><span class="line">	# 最少连接算法：leastconn</span><br><span class="line">	# 请求源IP算法：source</span><br><span class="line">	balance roundrobin</span><br><span class="line">	# 日志格式</span><br><span class="line">	option tcplog</span><br><span class="line">	# 在MySQL中创建一个没有权限的haproxy用户，密码为空。</span><br><span class="line">	# Haproxy使用这个账户对MySQL进行心跳检测</span><br><span class="line">	option mysql-check user haproxy</span><br><span class="line">	server MySQL_1 172.17.0.2:3306 check weight 1 maxconn 2000</span><br><span class="line">	server MySQL_2 172.17.0.3:3306 check weight 1 maxconn 2000</span><br><span class="line">	server MySQL_3 172.17.0.4:3306 check weight 1 maxconn 2000</span><br><span class="line">	server MySQL_4 172.17.0.5:3306 check weight 1 maxconn 2000</span><br><span class="line">	server MySQL_5 172.17.0.6:3306 check weight 1 maxconn 2000</span><br><span class="line">	# 使用keepalive检测死链</span><br><span class="line">	option tcpka</span><br></pre></td></tr></table></figure></p>
+<ol start="3">
+<li>创建Haproxy容器<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run -it -d -p <span class="number">4001</span>:<span class="number">8888</span> -p <span class="number">4002</span>:<span class="number">3306</span> -v /home/soft/haproxy:/usr/local/etc/haproxy --name haproxy --privileged --net=net1 --ip <span class="number">172.17</span><span class="number">.0</span><span class="number">.7</span> haproxy </span><br><span class="line">haproxy -f /usr/local/etc/haproxy/haproxy.cfg</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>创建mysql用户<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create user <span class="string">'haproxy'</span>@<span class="string">'%'</span> identified by <span class="string">''</span> <span class="comment"># 创建Haproxy用户</span></span><br></pre></td></tr></table></figure></p>
+<p>进入haproxy容器并加载配置文件<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="keyword">exec</span> -it haproxy bash</span><br><span class="line">haproxy -f /usr/local/etc/haproxy/haproxy.cfg</span><br></pre></td></tr></table></figure></p>
+<ol start="4">
+<li>Haproxy的使用<br>启动haproxy以后，可以在后台查看各数据库的可用性，地址为<br><a href="http://localhost:4001/dbs" target="_blank" rel="noopener">http://localhost:4001/dbs</a></li>
+</ol>
+<ul>
+<li>以上地址中的端口号，为宿主机与docker容器的映射端口，宿主机为4001，映射的容器端口为8888。</li>
+<li>url请求地址，为haproxy.cfg配置文件中的地址<br>当停止数据库集群中的任意一个节后，在此页面中可以看到该节点的状态变为红色，通过haproxy分发过来的请求则不会再转发到此节点</li>
+<li>测试：<br>创建数据库连接，宿主机端口为4002，会转发到docker容器中的3306端口，使用该数据库连接，插入的数据会转发至集群中的其他节点<br>在haproxy连接中写入的数据，请求会被均匀分发给集群中的MySQL实例，并通过PXC的机制将数据同步至其他实例</li>
+</ul>
+<h3 id="双机热备高可用方案"><a href="#双机热备高可用方案" class="headerlink" title="双机热备高可用方案"></a>双机热备高可用方案</h3><p>单节点Haproxy不具备高可用，必须要有冗余设计，如果一旦Haproxy出现故障，集群式的数据库负载均衡就将失效。</p>
+<ol>
+<li>利用Keepalived实现双机热备</li>
+</ol>
+<ul>
+<li>创建2个容器，分别部署Keepalived，两个Keepalived抢占同一个虚拟IP</li>
+<li>Docker内的虚拟IP不能被外网使用，所以需要借助宿主机Keepalived映射成外网可访问的虚拟IP</li>
+<li>创建宿主机的虚拟IP，向此虚拟IP发送请求，该请求就会路由到Docker内部的虚拟IP上</li>
+<li>Docker内部的虚拟IP被一个Keepalived抢占着，因此请求会被转发到Haproxy上，并通过负载均衡发送给PXC数据库节点</li>
+</ul>
+<ol start="2">
+<li><p>安装Keepalived<br>Keepalived必须安装在Haproxy所在的容器之内</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="keyword">exec</span> -it haproxy bash</span><br><span class="line">apt-get update</span><br><span class="line">apt-get install keepalived</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Keepalived配置文件</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt-get install vim</span><br><span class="line">vim /etc/keepalived/keepalived.conf</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>文件主要内容如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">vrrp_instance VI_1 &#123;</span><br><span class="line">    state MASTER <span class="comment"># Keepalived的身份（MASTER主服务，BACKUP备服务器）。主服务器要抢占虚拟IP，备用服务器不会抢占虚拟IP</span></span><br><span class="line">	interface eth0 <span class="comment"># 网卡设备</span></span><br><span class="line">	virtual_router_id <span class="number">51</span> <span class="comment"># 虚拟路由标识，MASTER和BACKUP的虚拟路由标识必须一致，区间为0-255</span></span><br><span class="line">	priority <span class="number">100</span> <span class="comment"># MASTER权重要高于BACKUP，数字越大优先级越高</span></span><br><span class="line">	advert_int <span class="number">1</span> <span class="comment"># 心跳检测时间（秒）</span></span><br><span class="line">	authentication&#123; <span class="comment"># 主服务器验证方式，主备必须使用相同的密码才能正常通信</span></span><br><span class="line">        auth_type PASS</span><br><span class="line">		auth_pass <span class="number">123456</span></span><br><span class="line">	&#125;</span><br><span class="line">	virtual_ipaddress&#123; <span class="comment"># 虚拟IP地址，可以设置多个虚拟IP地址，每行一个</span></span><br><span class="line">	    <span class="number">172.17</span><span class="number">.0</span><span class="number">.201</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ol start="4">
+<li>启动Keepalived<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service keepalived start</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>启动Keepalived之后，宿主机可以Ping通虚拟IP<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping <span class="number">172.17</span><span class="number">.0</span><span class="number">.201</span></span><br></pre></td></tr></table></figure></p>
+<p>启动无误后，需创建另一个Haproxy容器，并安装Keepalived启动</p>
+<ol start="5">
+<li>在宿主机上安装Keepalived<br>宿主机Keepalived配置文件内容如下<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">vrrp_instance VI_1&#123;</span><br><span class="line">    state MASTER</span><br><span class="line">	interface ens33</span><br><span class="line">	virtual_router_id 51</span><br><span class="line">	priority 100</span><br><span class="line">	advert_int 1</span><br><span class="line">	authentication&#123;</span><br><span class="line">	    auth_type PASS</span><br><span class="line">		auth_pass 1111</span><br><span class="line">	&#125;</span><br><span class="line">	virtual_ipaddress&#123;</span><br><span class="line">	    192.168.99.150 # 应用程序的请求发送到此IP</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">virtual_server 192.168.99.150 8888&#123;</span><br><span class="line">    # 心跳检测间隔3秒</span><br><span class="line">	delay_loop 3</span><br><span class="line">	# 轮询转发</span><br><span class="line">	lb_algo rr</span><br><span class="line">	# NAT模式</span><br><span class="line">	lb_kind NAT</span><br><span class="line">	超时时间</span><br><span class="line">	persistence_timeout 50</span><br><span class="line">	protocol TCP</span><br><span class="line">	real_server 172.17.0.201 8888&#123;</span><br><span class="line">	    weight 1</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">virtual_server 192.168.99.150 3306&#123;</span><br><span class="line">    delay_loop 3</span><br><span class="line">	lb_algo rr</span><br><span class="line">	lb_kind NAT</span><br><span class="line">	persistence_timeout 50</span><br><span class="line">	protocol TCP</span><br><span class="line">	real_server 172.17.0.201 3306&#123;</span><br><span class="line">	    weight 1</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>将配置文件保存在宿主机的指定目录，目录地址：/etc/keepalived/keepalived.conf<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">service keepalived start <span class="comment"># 启动服务</span></span><br><span class="line">ping <span class="number">192.168</span><span class="number">.99</span><span class="number">.150</span> <span class="comment"># 查看能否Ping通</span></span><br></pre></td></tr></table></figure></p>
+<p>访问局域网内的虚拟IP查看能否看到Haproxy的负载均衡监控页面<br><a href="http://192.168.99.150:8888/dbs" target="_blank" rel="noopener">http://192.168.99.150:8888/dbs</a></p>
+<h3 id="暂停PXC集群的办法"><a href="#暂停PXC集群的办法" class="headerlink" title="暂停PXC集群的办法"></a>暂停PXC集群的办法</h3><p>当宿主机挂起状态后，再次启动时，docker容器无法获得网络，通过修改宿主机配置文件解决<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/sysctl.conf</span><br><span class="line"><span class="comment"># 添加 net.ipv4.ip_forward=1 </span></span><br><span class="line">systemctl restart network</span><br></pre></td></tr></table></figure></p>
+<h3 id="热备份数据"><a href="#热备份数据" class="headerlink" title="热备份数据"></a>热备份数据</h3><ol>
+<li>冷备份</li>
+</ol>
+<ul>
+<li>冷备份是关闭数据库时候的备份方式，通常做法是拷贝数据文件</li>
+<li>冷备份是最简单最安全的一种备份方式</li>
+<li>大型网站无法做到关闭业务备份数据，所以冷备份不是最佳选择</li>
+</ul>
+<ol start="2">
+<li>热备份</li>
+</ol>
+<ul>
+<li>热备份是在系统运行的状态下备份数据，也是难度最大的备份</li>
+<li>MySQL常见的热备份有LVM和XtraBackup两种方案</li>
+<li>建议使用XtraBackup热备MySQL</li>
+</ul>
+<ol start="3">
+<li>XtraBackup简介</li>
+</ol>
+<ul>
+<li>一款基于InnoDB的在线热备工具</li>
+<li>开源免费，支持在线热备，占用磁盘空间小，能够非常快速的备份与恢复mysql数据库</li>
+<li>支持全量备份，支持增量备份</li>
+</ul>
+<ol start="4">
+<li>XtraBackup优势</li>
+</ol>
+<ul>
+<li>备份过程中不锁表、快速可靠</li>
+<li>备份过程不会打断正在执行的事物</li>
+<li>能够基于压缩等功能节约磁盘空间和流量</li>
+</ul>
+<ol start="5">
+<li>全量备份和增量备份</li>
+</ol>
+<ul>
+<li>第一次采用全量备份</li>
+<li>后续采用增量备份</li>
+</ul>
+<ol start="6">
+<li>具体流程</li>
+</ol>
+<ul>
+<li><p>创建数据卷</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker volume create backup <span class="comment"># 创建数据卷</span></span><br><span class="line">docker stop node1 <span class="comment"># 停止node1节点</span></span><br><span class="line">docker rm node1 <span class="comment"># 删除node1容器</span></span><br><span class="line">docker run -d -p <span class="number">3306</span>:<span class="number">3306</span> -e MYSQL_ROOT_PASSWORD=abc123456 -e CLUSTER_NAME=PXC -e XTRABACKUP_PASSWORD=abc123456 -v v1:/var/lib/mysql -v backup:/data --privileged -e CLUSTER_JOIN=node2 --name=node1 --net=net1 --ip <span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span> pxc <span class="comment"># 重新创建node1容器，映射backup数据卷，同步节点选择node2（3、4、5）</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>PXC容器中安装XtraBackup，并执行备份</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="keyword">exec</span> -it node1 bash <span class="comment"># 首先进入node1节点</span></span><br><span class="line">apt-get update <span class="comment"># 更新apt-get</span></span><br><span class="line">apt-get install percona-xtrabackup<span class="number">-24</span> <span class="comment"># 安装percona-xtrabackup-24</span></span><br><span class="line">innobackupex --user=root --password=abc123456 /data/backup/full</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在宿主机上查看数据卷路径</span></span><br><span class="line">docker inspect backup</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="PXC全量恢复步骤"><a href="#PXC全量恢复步骤" class="headerlink" title="PXC全量恢复步骤"></a>PXC全量恢复步骤</h3><p>数据库可以热备份，但是不能热还原。为了避免恢复过程中的数据同步，我们采用空白的MySQL还原数据，然后再建立PXC集群<br>还原数据圈要将未提交的事物回滚，还原数据之后重启MySQL<br>具体命令：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">docker stop node1 node2 node3 node4 node5 <span class="comment"># 停止数据库集群的5个PXC节点</span></span><br><span class="line">docker rm node1 node2 node3 node4 node5 <span class="comment"># 删除5个PXC节点</span></span><br><span class="line">docker volume rm v1 v2 v3 v4 v5 <span class="comment"># 删除5个数据卷</span></span><br><span class="line">docker volume create v1 <span class="comment"># 创建v1数据卷</span></span><br><span class="line">docker run -d -p <span class="number">3306</span>:<span class="number">3306</span> -e MYSQL_ROOT_PASSWORD=abc123456 -e CLUSTER_NAME=PXC -e XTRABACKUP_PASSWORD=abc123456 -v v1:/var/lib/mysql -v backup:/data --privileged --name=node1 --net=net1 --ip <span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span> pxc <span class="comment"># 启动一个PXC节点node1</span></span><br><span class="line">docker <span class="keyword">exec</span> -it node1 bash <span class="comment"># 进入docker容器</span></span><br><span class="line">rm -rf /var/lib/mysql/* <span class="comment"># 清空mysql数据</span></span><br><span class="line">innobackupex --user=root --password=abc123456 --apply-back /data/backup/full/<span class="number">2018</span><span class="number">-05</span><span class="number">-01</span>_09<span class="number">-02</span><span class="number">-31</span>/ <span class="comment"># 将没有提交的事物回滚</span></span><br><span class="line">innobackupex --user=root --password=abc123456 --copy-back /data/backup/full/<span class="number">2018</span><span class="number">-05</span><span class="number">-01</span>_09<span class="number">-02</span><span class="number">-31</span>/ <span class="comment"># 执行冷还原</span></span><br><span class="line">exit <span class="comment"># 退出容器</span></span><br><span class="line">docker stop node1 <span class="comment"># 停止node1节点</span></span><br><span class="line">docker start node1 <span class="comment"># 启动node1节点</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="Redis集群"><a href="#Redis集群" class="headerlink" title="Redis集群"></a>Redis集群</h3><ol>
+<li>Redis目前的集群方案</li>
+</ol>
+<ul>
+<li>RedisCluster：官方推荐，没有中心节点</li>
+<li>Codis：中间件产品，存在中心节点</li>
+<li>Twemproxy：中间件产品，存在中心节点</li>
+</ul>
+<ol start="2">
+<li>RedisCluster优势</li>
+</ol>
+<ul>
+<li>无中心节点，客户端与redis节点直连，不需要中间代理层，每一个节点都可读可写</li>
+<li>数据可以被分片存储，因此需要为节点设置冗余节点，可避免数据丢失的问题</li>
+<li>管理方便，后续可自行增加或摘除节点</li>
+</ul>
+<ol start="3">
+<li>主从同步</li>
+</ol>
+<ul>
+<li>Redis集群中的数据库复制是通过主从同步来实现的</li>
+<li>主节点（Master）把数据分发给从节点（Slave）</li>
+<li>主从同步的好处在于高可用，Redis节点有冗余设计</li>
+</ul>
+<ol start="4">
+<li>Redis集群高可用</li>
+</ol>
+<ul>
+<li>Redis集群中应该包含奇数个Master，至少应该有3个Master（选举机制）</li>
+<li>Redis集群中每个Master都应该有Slave</li>
+<li>Spring架构中使用Redis时，Spring已经实现了Redis的负载均衡，因此Redis无需单独配置负载均衡</li>
+</ul>
+<ol start="5">
+<li>配置RedisCluster集群</li>
+</ol>
+<ul>
+<li><p>安装Redis镜像</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker pull yyyyttttwwww/redis <span class="comment"># 下载redis镜像</span></span><br><span class="line">docker network create --subnet=<span class="number">172.19</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">16</span> net2 <span class="comment"># 创建net2网络</span></span><br><span class="line">docker run -it -d --name r1 -p <span class="number">5001</span>:<span class="number">6379</span> --net=net2 --ip <span class="number">172.19</span><span class="number">.0</span><span class="number">.2</span> redis bash <span class="comment"># 运行redis容器</span></span><br><span class="line">docker <span class="keyword">exec</span> -it r1 bash <span class="comment"># 进入容器</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改Redis配置文件<br>配置文件路径为：/usr/redis/redis.conf<br>关键参数如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">daemonize yes <span class="comment"># 以后台进程运行</span></span><br><span class="line">cluster-enabled yes <span class="comment"># 开启集群</span></span><br><span class="line">cluster-config-file nodes.conf <span class="comment"># 集群配置文件</span></span><br><span class="line">cluster-node-timeout <span class="number">15000</span> <span class="comment"># 超时时间</span></span><br><span class="line">appendonly yes <span class="comment"># 开启AOF模式（开启日志功能，一旦宕机可以通过日志恢复数据）</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动Redis</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/redis/src</span><br><span class="line">./redis-server ../redis.conf</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="使用redis-trib-rb创建Redis集群"><a href="#使用redis-trib-rb创建Redis集群" class="headerlink" title="使用redis-trib.rb创建Redis集群"></a>使用redis-trib.rb创建Redis集群</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cp /usr/redis/src/redis-trib.rb /usr/redis/cluster/</span><br><span class="line">cd /usr/redis/cluster</span><br><span class="line">apt-get install ruby</span><br><span class="line">apt-get install rubygems</span><br><span class="line">gem install redis</span><br></pre></td></tr></table></figure>
+<p>具体命令<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./redis-trib.rb create --replicas <span class="number">1</span> <span class="number">172.19</span><span class="number">.0</span><span class="number">.2</span>:<span class="number">6379</span> <span class="number">172.19</span><span class="number">.0</span><span class="number">.3</span>:<span class="number">6379</span> <span class="number">172.19</span><span class="number">.0</span><span class="number">.4</span>:<span class="number">6379</span> <span class="number">172.19</span><span class="number">.0</span><span class="number">.5</span>:<span class="number">6379</span> <span class="number">172.19</span><span class="number">.0</span><span class="number">.6</span>:<span class="number">6379</span> <span class="number">172.19</span><span class="number">.0</span><span class="number">.7</span>:<span class="number">6379</span> <span class="comment"># --replicas 1 参数标识为每个主节点创建一个从节点</span></span><br></pre></td></tr></table></figure></p>
+<p>示例<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="keyword">exec</span> -it r1 bash</span><br><span class="line">cd /usr/redis/</span><br><span class="line">mkdir cluster</span><br><span class="line">cd src</span><br><span class="line">cp redis-trib.rb ../cluster</span><br><span class="line">cd ../cluster</span><br><span class="line">./redis-trib.rb create --replicas <span class="number">1</span> <span class="number">172.19</span><span class="number">.0</span><span class="number">.2</span>:<span class="number">6379</span> <span class="number">172.19</span><span class="number">.0</span><span class="number">.3</span>:<span class="number">6379</span> <span class="number">172.19</span><span class="number">.0</span><span class="number">.4</span>:<span class="number">6379</span> <span class="number">172.19</span><span class="number">.0</span><span class="number">.5</span>:<span class="number">6379</span> <span class="number">172.19</span><span class="number">.0</span><span class="number">.6</span>:<span class="number">6379</span> <span class="number">172.19</span><span class="number">.0</span><span class="number">.7</span>:<span class="number">6379</span></span><br></pre></td></tr></table></figure></p>
+<p>测试<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="keyword">exec</span> -it r1 bash <span class="comment"># 进入任意一个Redis容器</span></span><br><span class="line">/usr/redis/src/redis-cli -c <span class="comment"># 连接Redis集群客户端</span></span><br><span class="line">set a <span class="number">10</span> <span class="comment"># 插入一条数据&#123;"a":"10"&#125;</span></span><br><span class="line">get a <span class="comment"># 取出key为"a"的数据</span></span><br><span class="line">docker pause r3 <span class="comment"># 挂掉r3节点</span></span><br><span class="line">cluster nodes <span class="comment"># 查看客户端运行状况</span></span><br><span class="line">get a <span class="comment"># 尝试读取key为"a"的值，发现从Slave节点读取了数据</span></span><br><span class="line">docker unpause r3 <span class="comment"># 恢复r3节点</span></span><br><span class="line">cluster nodes <span class="comment"># 查看r3节点，会由原Master节点降级为Slave节点</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="SpringBoot中后端项目的部署"><a href="#SpringBoot中后端项目的部署" class="headerlink" title="SpringBoot中后端项目的部署"></a>SpringBoot中后端项目的部署</h3><p>在application.yum文件中，删除单节点的Redis的配置，并增加Redis集群的配置<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cluster:</span><br><span class="line">  nodes:</span><br><span class="line">  - <span class="number">172.19</span><span class="number">.0</span><span class="number">.2</span>:<span class="number">6379</span></span><br><span class="line">  - <span class="number">172.19</span><span class="number">.0</span><span class="number">.3</span>:<span class="number">6379</span></span><br><span class="line">  - <span class="number">172.19</span><span class="number">.0</span><span class="number">.4</span>:<span class="number">6379</span></span><br><span class="line">  - <span class="number">172.19</span><span class="number">.0</span><span class="number">.5</span>:<span class="number">6379</span></span><br><span class="line">  - <span class="number">172.19</span><span class="number">.0</span><span class="number">.6</span>:<span class="number">6379</span></span><br><span class="line">  - <span class="number">172.19</span><span class="number">.0</span><span class="number">.7</span>:<span class="number">6379</span></span><br></pre></td></tr></table></figure></p>
+<p>关于Tomcat的配置，将端口修改为6001（多个java容器中的port为6002、6003…）<br>因为docker虚拟机进制跨网段访问，因此需将java程序所在网段的对接到宿主机的网络上，不为java容器划分网络<br>具体命令<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker volume create j1</span><br><span class="line"><span class="comment"># 复制jar文件到宿主机数据卷目录</span></span><br><span class="line">docker run -it -d --name j1 -v j1:/home/soft --net=host java <span class="comment"># 创建java容器j1</span></span><br><span class="line">docker <span class="keyword">exec</span> -it j1 bash <span class="comment"># 进入j1容器</span></span><br><span class="line">nohup java -jar /home/soft/xxx.jar <span class="comment"># java -jar /home/soft/xxx.jar &gt; log.out &amp;</span></span><br></pre></td></tr></table></figure></p>
+<p>创建其他java容器时，需修改java项目配置文件中的tomcat端口：6002、6003…</p>
+<h3 id="Nginx部署后端项目配置"><a href="#Nginx部署后端项目配置" class="headerlink" title="Nginx部署后端项目配置"></a>Nginx部署后端项目配置</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">upstream tomcat &#123;</span><br><span class="line">    server <span class="number">192.168</span><span class="number">.99</span><span class="number">.104</span>:<span class="number">6001</span>;</span><br><span class="line">	server <span class="number">192.168</span><span class="number">.99</span><span class="number">.104</span>:<span class="number">6002</span>;</span><br><span class="line">	server <span class="number">192.168</span><span class="number">.99</span><span class="number">.104</span>:<span class="number">6003</span>;</span><br><span class="line">&#125;</span><br><span class="line">server&#123;</span><br><span class="line">    listen <span class="number">6101</span>;</span><br><span class="line">	server_name <span class="number">192.168</span><span class="number">.99</span><span class="number">.104</span>;</span><br><span class="line">	location / &#123;</span><br><span class="line">	    proxy_pass http://tomcat;</span><br><span class="line">	    index index.html index.htm;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>创建nginx容器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it -d --name n1 -v /home/n1/nginx.conf:/etc/nginx/nginx.conf --net=host --privileged nginx # 因为数据卷无法映射文件，因此需要映射文件</span><br></pre></td></tr></table></figure></p>
+<p>增加nginx冗余节点，修改配置文件中server-listen监听的端口号修改为6102</p>
+<h3 id="Nginx利用Keepalived实现双机热备"><a href="#Nginx利用Keepalived实现双机热备" class="headerlink" title="Nginx利用Keepalived实现双机热备"></a>Nginx利用Keepalived实现双机热备</h3><ol>
+<li><p>安装Keepalived</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="keyword">exec</span> -it n1 bash <span class="comment"># 进入nginx容器</span></span><br><span class="line">apt-get update <span class="comment"># 更新apt-get</span></span><br><span class="line">ape-get install keepalived <span class="comment"># 安装keepalived</span></span><br><span class="line">ape-get install vim <span class="comment"># 安装vim编辑器</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置Keepalived</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/keepalived/keepalived.conf <span class="comment"># 编辑keepalived配置文件</span></span><br><span class="line"><span class="comment"># 在配置文件中增加如下信息</span></span><br><span class="line">vrrp_instance VI_1&#123;</span><br><span class="line">    state MASTER</span><br><span class="line">	interface ens33</span><br><span class="line">	virtual_router_id <span class="number">51</span></span><br><span class="line">	priority <span class="number">100</span></span><br><span class="line">	advert_int <span class="number">1</span></span><br><span class="line">	authentication&#123;</span><br><span class="line">	    auth_type PASS</span><br><span class="line">		auth_pass <span class="number">123456</span></span><br><span class="line">	&#125;</span><br><span class="line">	virtual_ipaddress&#123;</span><br><span class="line">	    <span class="number">192.168</span><span class="number">.99</span><span class="number">.151</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">virtual_server <span class="number">192.168</span><span class="number">.99</span><span class="number">.151</span> <span class="number">6201</span>&#123;</span><br><span class="line">    delay_loop <span class="number">3</span></span><br><span class="line">	lb_algo rr</span><br><span class="line">	lb_kind NAT</span><br><span class="line">	persistence_timeout <span class="number">50</span></span><br><span class="line">	protocol TCP</span><br><span class="line">	real_server <span class="number">192.168</span><span class="number">.99</span><span class="number">.104</span> <span class="number">6101</span>&#123;</span><br><span class="line">	    weight <span class="number">1</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动Keepalived并检测</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">service keepalived start</span><br><span class="line">exit <span class="comment"># 退出docker容器</span></span><br><span class="line">ping <span class="number">192.168</span><span class="number">.99</span><span class="number">.151</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装部署第二个Keepalived节点</p>
+</li>
+</ol>
+<ul>
+<li>配置文件关键参数<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">real_server <span class="number">192.168</span><span class="number">.99</span><span class="number">.104</span> <span class="number">6102</span>&#123;</span><br><span class="line">    weight <span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># 不管哪一个Keepalived抢占了虚拟ip（192.168.99.151），均会向n1节点或n2节点分发请求</span></span><br><span class="line">service keepalived start <span class="comment"># 启动Keepalived</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ol start="5">
+<li>测试双机热备方案</li>
+</ol>
+<ul>
+<li>挂掉n1节点<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pause n1 <span class="comment"># 此时n2节点会抢占到虚拟ip（192.168.99.151）</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="部署前端项目"><a href="#部署前端项目" class="headerlink" title="部署前端项目"></a>部署前端项目</h3><ol>
+<li>部署Nginx运行前端项目</li>
+</ol>
+<ul>
+<li>Nginx配置文件<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">user nginx;</span><br><span class="line">worker_processes <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">error_log /var/log/nginx/error.log warn;</span><br><span class="line">pid /var/run/nginx.pid</span><br><span class="line"></span><br><span class="line">events&#123;</span><br><span class="line">    worker_connections <span class="number">1024</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http&#123;</span><br><span class="line">    include /etc/nginx/mime.types;</span><br><span class="line">	default_type application/octet-stream;</span><br><span class="line">	</span><br><span class="line">	log_format main <span class="string">'$remote_addr - $remote_user [$time_local] "$request" '</span></span><br><span class="line">		            <span class="string">'$status $body_bytes_sent "$http_referer" '</span></span><br><span class="line">					<span class="string">'"$http_user_agent" "$http_x_forwarded_for"'</span>;</span><br><span class="line">	</span><br><span class="line">	access_log /var/log/nginx/access.log main;</span><br><span class="line">	</span><br><span class="line">	sendfile on;</span><br><span class="line">	<span class="comment"># tcp_nopush on;</span></span><br><span class="line">	</span><br><span class="line">	keepalive_timeout <span class="number">65</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment"># gzip on;</span></span><br><span class="line">	</span><br><span class="line">	proxy_redirect off;</span><br><span class="line">	proxy_set_header Host $host;</span><br><span class="line">	proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">	proxy_set_header X-Forwarded_For $proxy_add_x_forwarded_for;</span><br><span class="line">	client_max_body_size <span class="number">10</span>m;</span><br><span class="line">	client_body_buffer_size <span class="number">128</span>k;</span><br><span class="line">	proxy_connect_timeout <span class="number">5</span>s;</span><br><span class="line">	proxy_send_timeout <span class="number">5</span>s;</span><br><span class="line">	proxy_read_timeout <span class="number">5</span>s;</span><br><span class="line">	proxy_buffer_size <span class="number">4</span>k;</span><br><span class="line">	proxy_buffers <span class="number">4</span> <span class="number">32</span>k;</span><br><span class="line">	proxy_busy_buffers_size <span class="number">64</span>k;</span><br><span class="line">	proxy_temp_file_write_size <span class="number">64</span>k;</span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line">        listen <span class="number">6501</span>;</span><br><span class="line">	    server_name <span class="number">192.168</span><span class="number">.99</span><span class="number">.104</span>; <span class="comment"># 宿主机IP</span></span><br><span class="line">	    location / &#123;</span><br><span class="line">	        root /home/fn1/dist; <span class="comment"># 前端项目部署路径，将宿主机同名目录映射到容器的此目录上</span></span><br><span class="line">		    index index.html;</span><br><span class="line">	    &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ol start="2">
+<li><p>创建并运行Nginx容器</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it -d --name fn1 -v /home/fn1/nginx.conf:/etc/nginx/nginx.conf -v /home/fn1/dist:/home/fn1/dist --privileged --net=host nginx <span class="comment"># 分别映射配置文件和项目目录</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置更多的前端节点</p>
+</li>
+</ol>
+<ul>
+<li>参考第一个Nginx前端节点</li>
+<li>修改Nginx配置文件，fn1节点端口为6501，可以使用6502、6503…</li>
+</ul>
+<ol start="4">
+<li>为前端节点设置负载均衡</li>
+</ol>
+<ul>
+<li><p>负载均衡Nginx配置文件</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">user nginx;</span><br><span class="line">worker_processes <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">error_log /var/log/nginx/error.log warn;</span><br><span class="line">pid /var/run/nginx.pid</span><br><span class="line"></span><br><span class="line">events&#123;</span><br><span class="line">    worker_connections <span class="number">1024</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http&#123;</span><br><span class="line">    include /etc/nginx/mime.types;</span><br><span class="line">	default_type application/octet-stream;</span><br><span class="line">	</span><br><span class="line">	log_format main <span class="string">'$remote_addr - $remote_user [$time_local] "$request" '</span></span><br><span class="line">		            <span class="string">'$status $body_bytes_sent "$http_referer" '</span></span><br><span class="line">					<span class="string">'"$http_user_agent" "$http_x_forwarded_for"'</span>;</span><br><span class="line">	</span><br><span class="line">	access_log /var/log/nginx/access.log main;</span><br><span class="line">	</span><br><span class="line">	sendfile on;</span><br><span class="line">	<span class="comment"># tcp_nopush on;</span></span><br><span class="line">	</span><br><span class="line">	keepalive_timeout <span class="number">65</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment"># gzip on;</span></span><br><span class="line">	</span><br><span class="line">	proxy_redirect off;</span><br><span class="line">	proxy_set_header Host $host;</span><br><span class="line">	proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">	proxy_set_header X-Forwarded_For $proxy_add_x_forwarded_for;</span><br><span class="line">	client_max_body_size <span class="number">10</span>m;</span><br><span class="line">	client_body_buffer_size <span class="number">128</span>k;</span><br><span class="line">	proxy_connect_timeout <span class="number">5</span>s;</span><br><span class="line">	proxy_send_timeout <span class="number">5</span>s;</span><br><span class="line">	proxy_read_timeout <span class="number">5</span>s;</span><br><span class="line">	proxy_buffer_size <span class="number">4</span>k;</span><br><span class="line">	proxy_buffers <span class="number">4</span> <span class="number">32</span>k;</span><br><span class="line">	proxy_busy_buffers_size <span class="number">64</span>k;</span><br><span class="line">	proxy_temp_file_write_size <span class="number">64</span>k;</span><br><span class="line"></span><br><span class="line">	upstream fn&#123; <span class="comment"># 设置负载均衡，名字为fn</span></span><br><span class="line">		server <span class="number">192.168</span><span class="number">.99</span><span class="number">.104</span>:<span class="number">6501</span>; <span class="comment"># 负载均衡的Nginx节点</span></span><br><span class="line">		server <span class="number">192.168</span><span class="number">.99</span><span class="number">.104</span>:<span class="number">6502</span>;</span><br><span class="line">		server <span class="number">192.168</span><span class="number">.99</span><span class="number">.104</span>:<span class="number">6503</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line">        listen <span class="number">6601</span>; <span class="comment"># 本负载均衡开放的端口</span></span><br><span class="line">	    server_name <span class="number">192.168</span><span class="number">.99</span><span class="number">.104</span>; <span class="comment"># 宿主机IP</span></span><br><span class="line">	    location / &#123;</span><br><span class="line">	        proxy_pass http://fn; <span class="comment"># 引用上方的负载均衡设置</span></span><br><span class="line">		    index index.html;</span><br><span class="line">	    &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将配置文件放置在指定目录</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /home/ff1/nginx.conf</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建负载均衡节点</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it -d --name ff1 -v /home/ff1/nginx.conf:/etc/nginx/nginx.conf --net=host --privileged nginx</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第二个Nginx节点配置文件，注意需要将6601端口更改为6602</p>
+</li>
+<li><p>安装Keepalived实现双机热备</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="keyword">exec</span> -it ff1 bash</span><br><span class="line">apt-get update <span class="comment"># 更新apt-get</span></span><br><span class="line">apt-get install keepalived</span><br><span class="line">apt-get install vim</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Keepalived配置文件</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/keepalived/keepalived.conf</span><br><span class="line"></span><br><span class="line">vrrp_instance VI_1&#123;</span><br><span class="line">	state MASTER</span><br><span class="line">	interface ens33</span><br><span class="line">	virtual_router_id <span class="number">52</span></span><br><span class="line">	priority <span class="number">100</span></span><br><span class="line">	advert_int <span class="number">1</span></span><br><span class="line">	authentication&#123;</span><br><span class="line">		auth_type PASS</span><br><span class="line">		auth_pass <span class="number">123456</span></span><br><span class="line">	&#125;</span><br><span class="line">	virtual_ipaddress&#123;</span><br><span class="line">		<span class="number">192.168</span><span class="number">.99</span><span class="number">.152</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">virtual_server <span class="number">192.168</span><span class="number">.99</span><span class="number">.152</span> <span class="number">6701</span>&#123;</span><br><span class="line">	delay_loop <span class="number">3</span></span><br><span class="line">	lb_algo rr</span><br><span class="line">	lb_kind NAT</span><br><span class="line">	persistence_timeout <span class="number">50</span></span><br><span class="line">	protocol TCP</span><br><span class="line">	real_server <span class="number">192.168</span><span class="number">.99</span><span class="number">.104</span> <span class="number">6601</span>&#123;</span><br><span class="line">		weight <span class="number">1</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动Keepalived</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service keepalived start</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注意：若虚拟机挂起后，需要进入安装了Keepalived的容器，重启Keepalived</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service keepalived restart</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="Docker图形管理界面"><a href="#Docker图形管理界面" class="headerlink" title="Docker图形管理界面"></a>Docker图形管理界面</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull portainer/portainer</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>开放Docker网络管理端口</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/sysconfig/docker</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在配置文件结尾添加开放Docker的2375端口的参数</span></span><br><span class="line">OPTIONS=<span class="string">'-Htcp://0.0.0.0:2375 -H unix:///var/run/docker.sock'</span></span><br><span class="line"></span><br><span class="line">service docker restart</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动Portainer容器</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p <span class="number">9000</span>:<span class="number">9000</span> portainer/portainer -H tcp://<span class="number">192.168</span><span class="number">.99</span><span class="number">.196</span>:<span class="number">2375</span> <span class="comment"># 注意最后为宿主机IP</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+  
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Docker/" rel="tag"><i class="fa fa-tag"></i> Docker</a>
+          
+            <a href="/tags/系统架构/" rel="tag"><i class="fa fa-tag"></i> 系统架构</a>
+          
+            <a href="/tags/项目部署/" rel="tag"><i class="fa fa-tag"></i> 项目部署</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/30/阿里云NAS实现多服务器间文件互通/" rel="next" title="阿里云NAS实现多服务器间文件互通">
+                <i class="fa fa-chevron-left"></i> 阿里云NAS实现多服务器间文件互通
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="Zhao Peng">
+            
+              <p class="site-author-name" itemprop="name">Zhao Peng</p>
+              <p class="site-description motion-element" itemprop="description">记录生活点滴，描绘技术人生。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zhaopengvicki" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zhaopengvicki@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#CentOS7防火墙"><span class="nav-number">1.</span> <span class="nav-text">CentOS7防火墙</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker虚拟机"><span class="nav-number">2.</span> <span class="nav-text">Docker虚拟机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker容器"><span class="nav-number">2.1.</span> <span class="nav-text">Docker容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常见MySQL集群方案"><span class="nav-number">2.2.</span> <span class="nav-text">常见MySQL集群方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用PXC技术创建MySQL集群"><span class="nav-number">2.3.</span> <span class="nav-text">利用PXC技术创建MySQL集群</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装Haproxy镜像"><span class="nav-number">2.4.</span> <span class="nav-text">安装Haproxy镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#双机热备高可用方案"><span class="nav-number">2.5.</span> <span class="nav-text">双机热备高可用方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#暂停PXC集群的办法"><span class="nav-number">2.6.</span> <span class="nav-text">暂停PXC集群的办法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#热备份数据"><span class="nav-number">2.7.</span> <span class="nav-text">热备份数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PXC全量恢复步骤"><span class="nav-number">2.8.</span> <span class="nav-text">PXC全量恢复步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis集群"><span class="nav-number">2.9.</span> <span class="nav-text">Redis集群</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用redis-trib-rb创建Redis集群"><span class="nav-number">2.10.</span> <span class="nav-text">使用redis-trib.rb创建Redis集群</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringBoot中后端项目的部署"><span class="nav-number">2.11.</span> <span class="nav-text">SpringBoot中后端项目的部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nginx部署后端项目配置"><span class="nav-number">2.12.</span> <span class="nav-text">Nginx部署后端项目配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nginx利用Keepalived实现双机热备"><span class="nav-number">2.13.</span> <span class="nav-text">Nginx利用Keepalived实现双机热备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部署前端项目"><span class="nav-number">2.14.</span> <span class="nav-text">部署前端项目</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker图形管理界面"><span class="nav-number">3.</span> <span class="nav-text">Docker图形管理界面</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zhao Peng</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
