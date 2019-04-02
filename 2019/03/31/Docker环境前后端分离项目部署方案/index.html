@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="CentOS7防火墙 阿里云ECS-CentOS7的防火墙默认为关闭状态，需要从阿里云管理控制台管理端口 CentOS7默认安装了firewalld防火墙 利用防火墙，我们可以允许或是限制传输的数据通过 查看、启动、关闭、重启防火墙管理命令：">
+<meta name="description" content="如何通过Docker搭建一个”高负载“、”高性能“、”高可用“的前后端分离的项目，保证生产环境中数据的强一致性和服务器的高稳定性。本文涉及的技术栈包括Docker、Haproxy、MySQL PXC集群、Keepalived、Nginx等。">
 <meta name="keywords" content="Docker,系统架构,项目部署">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Docker环境前后端分离项目部署方案">
 <meta property="og:url" content="http://yoursite.com/2019/03/31/Docker环境前后端分离项目部署方案/index.html">
 <meta property="og:site_name" content="禅悟">
-<meta property="og:description" content="CentOS7防火墙 阿里云ECS-CentOS7的防火墙默认为关闭状态，需要从阿里云管理控制台管理端口 CentOS7默认安装了firewalld防火墙 利用防火墙，我们可以允许或是限制传输的数据通过 查看、启动、关闭、重启防火墙管理命令：">
+<meta property="og:description" content="如何通过Docker搭建一个”高负载“、”高性能“、”高可用“的前后端分离的项目，保证生产环境中数据的强一致性和服务器的高稳定性。本文涉及的技术栈包括Docker、Haproxy、MySQL PXC集群、Keepalived、Nginx等。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-03-31T15:07:39.248Z">
+<meta property="og:updated_time" content="2019-04-02T09:04:12.296Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Docker环境前后端分离项目部署方案">
-<meta name="twitter:description" content="CentOS7防火墙 阿里云ECS-CentOS7的防火墙默认为关闭状态，需要从阿里云管理控制台管理端口 CentOS7默认安装了firewalld防火墙 利用防火墙，我们可以允许或是限制传输的数据通过 查看、启动、关闭、重启防火墙管理命令：">
+<meta name="twitter:description" content="如何通过Docker搭建一个”高负载“、”高性能“、”高可用“的前后端分离的项目，保证生产环境中数据的强一致性和服务器的高稳定性。本文涉及的技术栈包括Docker、Haproxy、MySQL PXC集群、Keepalived、Nginx等。">
 
 
 
@@ -342,16 +342,17 @@
       
 
       
-        <h2 id="CentOS7防火墙"><a href="#CentOS7防火墙" class="headerlink" title="CentOS7防火墙"></a>CentOS7防火墙</h2><ol start="0">
+        <p>如何通过Docker搭建一个”高负载“、”高性能“、”高可用“的前后端分离的项目，保证生产环境中数据的强一致性和服务器的高稳定性。本文涉及的技术栈包括Docker、Haproxy、MySQL PXC集群、Keepalived、Nginx等。</p>
+<a id="more"></a>
+<h2 id="CentOS7防火墙"><a href="#CentOS7防火墙" class="headerlink" title="CentOS7防火墙"></a>CentOS7防火墙</h2><ol start="0">
 <li>阿里云ECS-CentOS7的防火墙默认为关闭状态，需要从阿里云管理控制台管理端口</li>
 <li>CentOS7默认安装了firewalld防火墙</li>
 <li>利用防火墙，我们可以允许或是限制传输的数据通过</li>
-<li><p>查看、启动、关闭、重启防火墙管理命令：</p>
-<a id="more"></a>
+<li>查看、启动、关闭、重启防火墙管理命令：</li>
+</ol>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --state <span class="comment"># 查看启动状态</span></span><br><span class="line">service firewall start <span class="comment"># 启动</span></span><br><span class="line">service firewall stop <span class="comment"># 停止</span></span><br><span class="line">service firewall restart <span class="comment"># 重启</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>端口管理</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --permanent --list-ports <span class="comment"># 查看开放的端口</span></span><br><span class="line">firewall-cmd --permanent --add-port=<span class="number">8080</span><span class="number">-8085</span>/tcp <span class="comment"># 开启端口</span></span><br><span class="line">firewall-cmd --reload <span class="comment"># 重新加载</span></span><br><span class="line">firewall-cmd --permanent --remove-port=<span class="number">8080</span><span class="number">-8085</span>/tcp <span class="comment"># 关闭端口</span></span><br><span class="line">firewall-cmd --permanent --list-services <span class="comment"># 查看使用互联网的程序</span></span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>端口管理<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --permanent --list-ports <span class="comment"># 查看开放的端口</span></span><br><span class="line">firewall-cmd --permanent --add-port=<span class="number">8080</span><span class="number">-8085</span>/tcp <span class="comment"># 开启端口</span></span><br><span class="line">firewall-cmd --reload <span class="comment"># 重新加载</span></span><br><span class="line">firewall-cmd --permanent --remove-port=<span class="number">8080</span><span class="number">-8085</span>/tcp <span class="comment"># 关闭端口</span></span><br><span class="line">firewall-cmd --permanent --list-services <span class="comment"># 查看使用互联网的程序</span></span><br></pre></td></tr></table></figure>
 </li>
 </ol>
 <h2 id="Docker虚拟机"><a href="#Docker虚拟机" class="headerlink" title="Docker虚拟机"></a>Docker虚拟机</h2><ol>
