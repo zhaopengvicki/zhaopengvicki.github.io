@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="如何通过最简单的方式在CentOS7服务器上安装MySQL数据库？ 本文讲述CentOS7服务器安装MySQL数据库的具体操作步骤和配置方法。点击阅读全文，依次执行命令即可完成MySQL服务器的安装及配置。">
+<meta name="description" content="本文来一起学习如何在CentOS服务器环境下安装部署Redis服务，并将安装时经常遇到的问题进行解答。">
 <meta name="keywords" content="服务器">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CentOS7安装MySQL数据库">
-<meta property="og:url" content="http://yoursite.com/2019/04/24/CentOS7安装MySQL数据库/index.html">
+<meta property="og:title" content="CentOS下Redis的安装与配置">
+<meta property="og:url" content="http://yoursite.com/2019/04/24/CentOS下Redis的安装与配置/index.html">
 <meta property="og:site_name" content="禅悟">
-<meta property="og:description" content="如何通过最简单的方式在CentOS7服务器上安装MySQL数据库？ 本文讲述CentOS7服务器安装MySQL数据库的具体操作步骤和配置方法。点击阅读全文，依次执行命令即可完成MySQL服务器的安装及配置。">
+<meta property="og:description" content="本文来一起学习如何在CentOS服务器环境下安装部署Redis服务，并将安装时经常遇到的问题进行解答。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-04-24T13:38:30.687Z">
+<meta property="og:updated_time" content="2019-04-24T13:42:02.301Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="CentOS7安装MySQL数据库">
-<meta name="twitter:description" content="如何通过最简单的方式在CentOS7服务器上安装MySQL数据库？ 本文讲述CentOS7服务器安装MySQL数据库的具体操作步骤和配置方法。点击阅读全文，依次执行命令即可完成MySQL服务器的安装及配置。">
+<meta name="twitter:title" content="CentOS下Redis的安装与配置">
+<meta name="twitter:description" content="本文来一起学习如何在CentOS服务器环境下安装部署Redis服务，并将安装时经常遇到的问题进行解答。">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/04/24/CentOS7安装MySQL数据库/">
+  <link rel="canonical" href="http://yoursite.com/2019/04/24/CentOS下Redis的安装与配置/">
 
 
 
 
 
-  <title>CentOS7安装MySQL数据库 | 禅悟</title>
+  <title>CentOS下Redis的安装与配置 | 禅悟</title>
   
 
 
@@ -253,7 +253,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/24/CentOS7安装MySQL数据库/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/24/CentOS下Redis的安装与配置/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Zhao Peng">
@@ -270,7 +270,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">CentOS7安装MySQL数据库</h1>
+          <h1 class="post-title" itemprop="name headline">CentOS下Redis的安装与配置</h1>
         
 
         <div class="post-meta">
@@ -282,7 +282,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-24T13:31:44+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-24T20:59:38+08:00">
                 2019-04-24
               </time>
             
@@ -342,28 +342,41 @@
       
 
       
-        <p>如何通过最简单的方式在CentOS7服务器上安装MySQL数据库？</p>
-<p>本文讲述CentOS7服务器安装MySQL数据库的具体操作步骤和配置方法。点击阅读全文，依次执行命令即可完成MySQL服务器的安装及配置。</p>
+        <p>本文来一起学习如何在CentOS服务器环境下安装部署Redis服务，并将安装时经常遇到的问题进行解答。</p>
 <a id="more"></a>
-<h2 id="下载并安装MySQL官方的Yum-Repository"><a href="#下载并安装MySQL官方的Yum-Repository" class="headerlink" title="下载并安装MySQL官方的Yum Repository"></a>下载并安装MySQL官方的Yum Repository</h2><p>下载安装用的Yum Repository，安装完成后，可以直接使用yum来安装MySQL。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@dev ~]# wget -i -c http://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm</span><br></pre></td></tr></table></figure>
-<p>安装rpm文件。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@dev ~]# yum -y install mysql57-community-release-el7-10.noarch.rpm</span><br></pre></td></tr></table></figure>
-<p>安装完成后，开始通过yum安装MySQL服务器。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@dev ~]# yum -y install mysql-community-server</span><br></pre></td></tr></table></figure>
-<p>安装完成后，需要执行下面命令卸载之前安装的Yum Repository。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@dev ~]# yum -y remove mysql57-community-release-el7-10.noarch</span><br></pre></td></tr></table></figure>
-<h2 id="配置MySQL服务器"><a href="#配置MySQL服务器" class="headerlink" title="配置MySQL服务器"></a>配置MySQL服务器</h2><p>MySQL数据库服务的几个命令</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@dev ~]# systemctl start mysqld.service # 启动mysql服务</span><br><span class="line">[root@dev ~]# systemctl stop mysqld.service # 停止mysql服务</span><br><span class="line">[root@dev ~]# systemctl restart mysqld.service # 重启mysql服务</span><br><span class="line">[root@dev ~]# systemctl status mysqld.service # 查看mysql运行状态</span><br></pre></td></tr></table></figure>
-<p>MySQL服务启动以后，进入MySQL服务需要输入root密码，默认密码被输出在mysql服务的日志文件中，路径为<code>/var/log/mysqld.log</code>，通过以下命令可以快速在mysql日志文件中找到随机生成的初始密码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@dev ~]# grep &quot;password&quot; /var/log/mysqld.log</span><br></pre></td></tr></table></figure>
-<p>获取密码后，进入数据库</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@dev ~]# mysql -u root -p</span><br></pre></td></tr></table></figure>
-<p>进入后，此时首先应该修改默认密码，因为MySQL默认密码必须修改后才可以对数据库进行操作，若密码强度要求不高，可以先修改mysql要求的密码规范，</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@dev ~]# set global validate_password_policy=0;</span><br><span class="line">[root@dev ~]# set global validate_password_length=1;</span><br><span class="line">[root@dev ~]# alter user &apos;root&apos;@&apos;localhost&apos; identified by &apos;&lt;new password&gt;&apos;;</span><br></pre></td></tr></table></figure>
-<p>密码修改完成后，此时默认只有本机环境可以访问数据库，若希望提供给外部访问，可以执行以下命令来修改数据库连接的host信息。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@dev ~]# use mysql; # 切换到mysql数据库</span><br><span class="line">[root@dev ~]# update user set host = &apos;%&apos; where user = &apos;root&apos;;</span><br></pre></td></tr></table></figure>
-<p>大功告成！</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>下载Redis源码包，Redis官方下载地址：<a href="https://redis.io/download" target="_blank" rel="noopener">点击进入</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@dev ~]# wget http://download.redis.io/releases/redis-5.0.4.tar.gz</span><br></pre></td></tr></table></figure>
+<p>解压缩</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@dev ~]# tar xzf redis-5.0.4.tar.gz</span><br></pre></td></tr></table></figure>
+<p>进入redis目录，并进行编译</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@dev ~]# cd redis-5.0.4</span><br><span class="line">[root@dev ~]# make</span><br></pre></td></tr></table></figure>
+<p>因为CentOS默认没有安装gcc，因此在编译时会报错，需要使用yum安装gcc</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@dev ~]# yum -y install gcc</span><br></pre></td></tr></table></figure>
+<p>由于jemalloc重载了Linux下的ANSI C的malloc和free函数，因此gcc安装完成后，在make时需要添加参数<code>MALLOC=libc</code></p>
+<p>再次执行编译命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@dev ~]# make MALLOC=libc</span><br></pre></td></tr></table></figure>
+<p>编译通过后，可以看到以下提示</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hint: To run &apos;make test&apos; is a good idea ;)</span><br></pre></td></tr></table></figure>
+<p>上述信息提示我们执行<code>make test</code>命令来进行测试，但执行测试命令时，可能会提示一下错误信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">You need tcl 8.5 or newer in order to run the Redis test</span><br><span class="line">make: ***[test] Error_1</span><br></pre></td></tr></table></figure>
+<p>需要我们使用yum安装tcl，安装命令如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@dev ~]# yum install tcl</span><br></pre></td></tr></table></figure>
+<p>通常无需测试即可使用<code>install</code>命令安装，执行一下命令安装Redis</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@dev ~]# make install</span><br></pre></td></tr></table></figure>
+<p>安装完成后，可以查看当前Redis版本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@dev ~]# redis-server -v</span><br><span class="line">Redis server v=5.0.4 sha=00000000:0 malloc=libc bits=64 build=c0da28891f337b92</span><br></pre></td></tr></table></figure>
+<p>Redis安装完成后，执行<code>redis server</code>可以启动Redis服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">[root@dev ~]# redis-server</span><br><span class="line">17889:C 24 Apr 21:35:09.085 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo</span><br><span class="line">17889:C 24 Apr 21:35:09.086 # Redis version=5.0.4, bits=64, commit=00000000, modified=0, pid=17889, just started</span><br><span class="line">17889:C 24 Apr 21:35:09.086 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf</span><br><span class="line">17889:M 24 Apr 21:35:09.087 * Increased maximum number of open files to 10032 (it was originally set to 1024).</span><br><span class="line">                _._</span><br><span class="line">           _.-``__ &apos;&apos;-._</span><br><span class="line">      _.-``    `.  `_.  &apos;&apos;-._           Redis 5.0.4 (00000000/0) 64 bit</span><br><span class="line">  .-`` .-```.  ```\/    _.,_ &apos;&apos;-._</span><br><span class="line"> (    &apos;      ,       .-`  | `,    )     Running in standalone mode</span><br><span class="line"> |`-._`-...-` __...-.``-._|&apos;` _.-&apos;|     Port: 6379</span><br><span class="line"> |    `-._   `._    /     _.-&apos;    |     PID: 17889</span><br><span class="line">  `-._    `-._  `-./  _.-&apos;    _.-&apos;</span><br><span class="line"> |`-._`-._    `-.__.-&apos;    _.-&apos;_.-&apos;|</span><br><span class="line"> |    `-._`-._        _.-&apos;_.-&apos;    |           http://redis.io</span><br><span class="line">  `-._    `-._`-.__.-&apos;_.-&apos;    _.-&apos;</span><br><span class="line"> |`-._`-._    `-.__.-&apos;    _.-&apos;_.-&apos;|</span><br><span class="line"> |    `-._`-._        _.-&apos;_.-&apos;    |</span><br><span class="line">  `-._    `-._`-.__.-&apos;_.-&apos;    _.-&apos;</span><br><span class="line">      `-._    `-.__.-&apos;    _.-&apos;</span><br><span class="line">          `-._        _.-&apos;</span><br><span class="line">              `-.__.-&apos;</span><br><span class="line"></span><br><span class="line">17889:M 24 Apr 21:35:09.088 # WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.</span><br><span class="line">17889:M 24 Apr 21:35:09.088 # Server initialized</span><br><span class="line">17889:M 24 Apr 21:35:09.088 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add &apos;vm.overcommit_memory = 1&apos; to /etc/sysctl.conf and then reboot or run the command &apos;sysctl vm.overcommit_memory=1&apos; for this to take effect.</span><br><span class="line">17889:M 24 Apr 21:35:09.088 # WARNING you have Transparent Huge Pages (THP) support enabled in your kernel. This will create latency and memory usage issues with Redis. To fix this issue run the command &apos;echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled&apos; as root, and add it to your /etc/rc.local in order to retain the setting after a reboot. Redis must be restarted after THP is disabled.</span><br><span class="line">17889:M 24 Apr 21:35:09.088 * DB loaded from disk: 0.000 seconds</span><br><span class="line">17889:M 24 Apr 21:35:09.088 * Ready to accept connections</span><br></pre></td></tr></table></figure>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>默认Redis服务为前台运行，当使用<code>Ctrl + C</code>退出服务界面后服务即关闭，因此需要配置Redis服务后台运行</p>
+<p>在<code>/etc</code>目录下创建文件夹<code>redis</code>，并将刚才安装包目录中的<code>redis.conf</code>文件复制到<code>/etc/redis</code>目录下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir /etc/redis</span><br><span class="line">cp redis.conf /etc/redis/</span><br></pre></td></tr></table></figure>
+<p>编辑配置文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/redis/redis.conf</span><br></pre></td></tr></table></figure>
+<p>查找<code>daemonize on</code>将其值修改为<code>yes</code>，并保存退出</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># By default Redis does not run as a daemon. Use &apos;yes&apos; if you need it.</span><br><span class="line"># Note that Redis will write a pid file in /var/run/redis.pid when daemonized.</span><br><span class="line">daemonize yes</span><br></pre></td></tr></table></figure>
+<p>启动Redis服务器时，指定配置文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-server /etc/redis/redis.conf</span><br></pre></td></tr></table></figure>
+<p>此时Redis服务已经在后台启动成功了，赶快使用<code>redis-cli</code>命令进入交互界面测试一下吧！</p>
 
       
     </div>
@@ -403,8 +416,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/04/02/Nginx配置upstream模块实现负载均衡/" rel="next" title="Nginx配置upstream模块实现负载均衡">
-                <i class="fa fa-chevron-left"></i> Nginx配置upstream模块实现负载均衡
+              <a href="/2019/04/24/CentOS7安装MySQL数据库/" rel="next" title="CentOS7安装MySQL数据库">
+                <i class="fa fa-chevron-left"></i> CentOS7安装MySQL数据库
               </a>
             
           </div>
@@ -412,10 +425,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/04/24/CentOS下Redis的安装与配置/" rel="prev" title="CentOS下Redis的安装与配置">
-                CentOS下Redis的安装与配置 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -565,7 +574,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#下载并安装MySQL官方的Yum-Repository"><span class="nav-number">1.</span> <span class="nav-text">下载并安装MySQL官方的Yum Repository</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置MySQL服务器"><span class="nav-number">2.</span> <span class="nav-text">配置MySQL服务器</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置"><span class="nav-number">2.</span> <span class="nav-text">配置</span></a></li></ol></div>
             
 
           </div>

@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="禅悟">
 <meta property="og:description" content="生产环境下，若无文件服务器或OSS对象存储等第三方服务时，集群环境的文件通常受服务器限制，例如用户将文件上传至A服务器，负载均衡将下一次请求分配到B服务器导致B服务器无法读取该文件，将会抛出IO异常，使用NAS可以解决此情况下的文件读取问题。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-04-02T09:06:45.609Z">
+<meta property="og:updated_time" content="2019-04-24T13:40:19.266Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="阿里云NAS实现多服务器间文件互通">
 <meta name="twitter:description" content="生产环境下，若无文件服务器或OSS对象存储等第三方服务时，集群环境的文件通常受服务器限制，例如用户将文件上传至A服务器，负载均衡将下一次请求分配到B服务器导致B服务器无法读取该文件，将会抛出IO异常，使用NAS可以解决此情况下的文件读取问题。">
@@ -349,9 +349,12 @@
 <li>购买阿里云NAS存储包</li>
 <li>ECS服务器</li>
 </ol>
-<h2 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h2><h3 id="安装nfs"><a href="#安装nfs" class="headerlink" title="安装nfs"></a>安装nfs</h3><p>在NFS协议挂载前，需要确保系统中已经安装了nfs-utils或nfs-common，安装方法如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CentOS：sudo yum install nfs-utils</span><br><span class="line">Ubuntu 或 Debian：sudo apt-get install nfs-common</span><br></pre></td></tr></table></figure></p>
-<h3 id="挂载文件"><a href="#挂载文件" class="headerlink" title="挂载文件"></a>挂载文件</h3><p>在阿里云管理控制台创建挂载点，获取挂载点域名，在所需挂载NAS硬盘服务器上执行以下命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mount -t nfs -o vers=4.0 &lt;挂载点域名&gt;:&lt;文件系统内目录&gt; &lt;当前服务器上待挂载目标目录&gt;</span><br></pre></td></tr></table></figure></p>
-<p>CentOS中，测试示例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mount -t nfs4 &lt;挂载点地址&gt;:&lt;文件系统内目录&gt; &lt;当前服务器上待挂载目标目录&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h2><h3 id="安装nfs"><a href="#安装nfs" class="headerlink" title="安装nfs"></a>安装nfs</h3><p>在NFS协议挂载前，需要确保系统中已经安装了nfs-utils或nfs-common，安装方法如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CentOS：sudo yum install nfs-utils</span><br><span class="line">Ubuntu 或 Debian：sudo apt-get install nfs-common</span><br></pre></td></tr></table></figure>
+<h3 id="挂载文件"><a href="#挂载文件" class="headerlink" title="挂载文件"></a>挂载文件</h3><p>在阿里云管理控制台创建挂载点，获取挂载点域名，在所需挂载NAS硬盘服务器上执行以下命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mount -t nfs -o vers=4.0 &lt;挂载点域名&gt;:&lt;文件系统内目录&gt; &lt;当前服务器上待挂载目标目录&gt;</span><br></pre></td></tr></table></figure>
+<p>CentOS中，测试示例如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mount -t nfs4 &lt;挂载点地址&gt;:&lt;文件系统内目录&gt; &lt;当前服务器上待挂载目标目录&gt;</span><br></pre></td></tr></table></figure>
 <h3 id="挂载完成"><a href="#挂载完成" class="headerlink" title="挂载完成"></a>挂载完成</h3><p>此时，在ECS服务器上将文件通过cp命令或mv命令移动到该挂载目录，或直接cd到目录中执行文件（夹）操作，其他ECS服务器cd到此目录后可以直接看到目录内容。</p>
 
       
@@ -483,7 +486,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

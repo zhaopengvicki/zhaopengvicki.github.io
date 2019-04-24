@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="nginx,系统架构,">
+  <meta name="keywords" content="系统架构,nginx,">
 
 
 
@@ -80,14 +80,14 @@
 
 
 <meta name="description" content="在生产环境中，通常我们将同一套项目代码部署到多台服务器上，以增加服务器宕机或其他不可控因素导致服务不可用情况的容错率。">
-<meta name="keywords" content="nginx,系统架构">
+<meta name="keywords" content="系统架构,nginx">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Nginx配置upstream模块实现负载均衡">
 <meta property="og:url" content="http://yoursite.com/2019/04/02/Nginx配置upstream模块实现负载均衡/index.html">
 <meta property="og:site_name" content="禅悟">
 <meta property="og:description" content="在生产环境中，通常我们将同一套项目代码部署到多台服务器上，以增加服务器宕机或其他不可控因素导致服务不可用情况的容错率。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-04-02T08:57:53.939Z">
+<meta property="og:updated_time" content="2019-04-24T13:39:36.664Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Nginx配置upstream模块实现负载均衡">
 <meta name="twitter:description" content="在生产环境中，通常我们将同一套项目代码部署到多台服务器上，以增加服务器宕机或其他不可控因素导致服务不可用情况的容错率。">
@@ -349,7 +349,7 @@
 <p>假设当前前台页面部署路径如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/share/nginx/dist</span><br></pre></td></tr></table></figure>
 <h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><p>复制<code>project.conf</code>文件，命名为<code>project1.conf</code>和<code>project2.conf</code>，示例命令如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; cd /etc/nginx/conf.d/</span><br><span class="line">&gt; cp project.conf project1.conf</span><br><span class="line">&gt; cp project.conf project2.conf</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@dev ~]# cd /etc/nginx/conf.d/</span><br><span class="line">[root@dev ~]# cp project.conf project1.conf</span><br><span class="line">[root@dev ~]# cp project.conf project2.conf</span><br></pre></td></tr></table></figure>
 <p>修改原nginx配置文件<code>project.conf</code>内容，在顶部添加如下内容：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">upstream &lt;project_name&gt; &#123;</span><br><span class="line">	server localhost:8081;</span><br><span class="line">	server localhost:8082;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>nginx负载均衡选项upstream模块的具体配置方法如下：</p>
@@ -368,9 +368,9 @@
 <p>将原有<code>location</code>中的内容替换为如上代码，注意<code>&lt;project_name&gt;</code>为<code>upstream</code>模块配置的名称，最后一行<code>proxy_next_upstream</code>表示在服务器返回 <code>500、502、504、服务器错误、超时</code>时，允许转发到其他服务器。<br><code>project.conf</code>文件配置完成后，开始配置<code>project1.conf</code>和<code>project2.conf</code>文件，两个文件配置方式完全一致，因为两个文件均copy自原<code>project.conf</code>文件，因此仅需要将修改监听端口及服务器名称即可，同时需要删除SSL等相关内容。<br>配置示例如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">project1.conf文件配置如下：</span><br><span class="line">server &#123;</span><br><span class="line">	listen	8081; # 与upstream中server的端口port一致</span><br><span class="line">	server_name localhost; # 与upstream中server的服务器名称host一致</span><br><span class="line">	</span><br><span class="line">	location / &#123; # 前端页面请求</span><br><span class="line">		alias /usr/share/nginx/dist1;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	location /api/ &#123; # 后端接口请求</span><br><span class="line">		proxy_read_timeout 600s;</span><br><span class="line">		proxy_pass http://127.0.0.1:7021/api/;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">#- - - - - - - - - - - - -#</span><br><span class="line">project2.conf文件配置如下：</span><br><span class="line">server &#123;</span><br><span class="line">	listen	8082; # 与upstream中server的端口port一致</span><br><span class="line">	server_name localhost; # 与upstream中server的服务器名称host一致</span><br><span class="line">	</span><br><span class="line">	location / &#123; # 前端页面请求</span><br><span class="line">		alias /usr/share/nginx/dist2;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	location /api/ &#123; # 后端接口请求</span><br><span class="line">		proxy_read_timeout 600s;</span><br><span class="line">		proxy_pass http://127.0.0.1:7022/api/;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="最后一步"><a href="#最后一步" class="headerlink" title="最后一步"></a>最后一步</h2><p>将原有前端项目文件夹复制到nginx配置文件的指定位置，命名为<code>dist1</code>和<code>dist2</code>,命令如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; cd /usr/share/nginx/</span><br><span class="line">&gt; cp -r dist dist1</span><br><span class="line">&gt; cp -r dist dist2</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@dev ~]# cd /usr/share/nginx/</span><br><span class="line">[root@dev ~]# cp -r dist dist1</span><br><span class="line">[root@dev ~]# cp -r dist dist2</span><br></pre></td></tr></table></figure>
 <p>配置完成后，执行以下命令重启nginx服务器，若控制台未显示任何内容，则重启成功：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; nginx -s reload</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@dev ~]# nginx -s reload</span><br></pre></td></tr></table></figure>
 <h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><ol>
 <li>首先检测网站是否可以正常访问并且调取接口。（正常访问）</li>
 <li>将<code>/usr/share/nginx/</code>目录下的<code>dist1</code>文件夹重命名为<code>dist11</code>,重命名后，nginx配置文件<code>project1.conf</code>中的前端页面请求则无法访问到指定文件夹<code>dist1</code>中的资源，测试网站是否可以正常访问。（正常访问）</li>
@@ -403,9 +403,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/nginx/" rel="tag"><i class="fa fa-tag"></i> nginx</a>
-          
             <a href="/tags/系统架构/" rel="tag"><i class="fa fa-tag"></i> 系统架构</a>
+          
+            <a href="/tags/nginx/" rel="tag"><i class="fa fa-tag"></i> nginx</a>
           
         </div>
       
@@ -509,7 +509,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
